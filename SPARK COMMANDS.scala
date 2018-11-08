@@ -142,4 +142,50 @@ data.take(1)
 input.select((0 until 3).map(n => 'value(n) as s"$n"): _*).show
 
 val headers = data.head.map(_.tim)
-headers.foldLeft
+headers.foldLeft(spark.emptyDataset[Long]) { (header, ds) => ds.withColumn(header, ds(header)) }
+
+val data = spark.read.format("csv").option("header", "true").option("separator", ",").load("test3.csv")
+
+data.withColumn("running_total", sum('items_sold) over departmentByTimeAsc).show
+
+data.select('words).map(w => w.toString as $"solution").show
+
+// Transform array of strings into strings
+data.withColumn("solution", concat('words(0), lit(" "), 'word(1))).show
+data.map(ss => (ss, ss.mkString(" "))).toDF(words.columns.head, "solution").show
+// or use correct builtin function 'concat_ws'
+
+
+// Streaming CSV datasets
+  val spark = SparkSession
+    .builder()
+    .appName("Spark Structured Streaming App")
+    .getOrCreate()
+
+  val in = spark.readStream
+    .format("csv")
+    .load
+
+  val q = in
+    .writeStream
+    .format("console")
+    .option("truncate", false)
+    .start
+
+  q.awaitTermination
+
+
+// linux zookeeper start
+./bin/zookeper-server-start.sh config/zookeeper.properties
+// linux kafka start
+./bin/kafka-server-start.sh config/server.properties
+
+// linux producer
+./bin/kafka-console-poducer.sh --broker-list :9092 --topic ovh-input
+// windows producer
+c:/path/kafka-console-producer.bat --broker-list :9092 --topic ovh-input
+
+// linux consumer
+./bin/kafka-console-consumer.sh --topic ovh-input --bootstrap-server :9092
+// windows consumer
+kafka-console-consumer.bat --topic ovh-input --bootstrap-server :9092
