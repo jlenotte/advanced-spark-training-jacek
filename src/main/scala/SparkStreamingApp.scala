@@ -13,6 +13,7 @@ object SparkStreamingApp extends App {
   val spark = SparkSession
     .builder()
     .appName("Spark Structured Streaming App")
+    .master("local[*]")
     .getOrCreate()
 
 
@@ -30,3 +31,4 @@ object SparkStreamingApp extends App {
   in.awaitTermination
 
 }
+

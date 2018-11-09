@@ -189,3 +189,16 @@ c:/path/kafka-console-producer.bat --broker-list :9092 --topic ovh-input
 ./bin/kafka-console-consumer.sh --topic ovh-input --bootstrap-server :9092
 // windows consumer
 kafka-console-consumer.bat --topic ovh-input --bootstrap-server :9092
+
+
+
+spark-submit --class SparkKafkaApp --packages org.apache.spark:spark-sql-kafka-version target/scala-2.12/the-jar.jar
+
+// in order to be able to specify this option with spark-sumbit,
+// change this:
+// .options("subscribe", args(0))
+
+// SBT tip:
+// the tilde + command will package your code after every change
+~ package
+

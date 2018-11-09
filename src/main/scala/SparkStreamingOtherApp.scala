@@ -1,0 +1,4 @@
+object SparkStreamingOtherApp extends App {
+
+
+}

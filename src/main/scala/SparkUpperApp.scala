@@ -34,7 +34,6 @@ object SparkUpperApp extends App {
 
   }
 
-  val diffs = dates.withColumn("to_date", to_date($"date_string", "dd/MM/yyyy")).withColumn("diff", datediff(current_date, $"to_date")).show
 
 }
 
